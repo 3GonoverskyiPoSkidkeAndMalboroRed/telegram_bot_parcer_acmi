@@ -1,14 +1,9 @@
-import time
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
-from PIL import Image, ImageDraw, ImageFont
-import io
 
 # Ваш токен бота
 BOT_TOKEN = '7376088476:AAEWoyTXmpp_PfHBohLg_4vN7OQRKpIhWSA'
 CHANNEL_ID = '@testNeveropv'  # Приватный канал
-user_last_photo_time = {}
-DEFAULT_CAPTION = "Добавьте свой текст"
 
 # Функция для обработки команды /send
 async def send_command(update: Update, context: CallbackContext):
@@ -19,11 +14,9 @@ async def send_command(update: Update, context: CallbackContext):
 async def handle_image(update: Update, context: CallbackContext):
     if context.user_data.get('awaiting_photo', False):  # Проверяем флаг ожидания
         photo = update.message.photo[-1]
-        caption = DEFAULT_CAPTION
         await context.bot.send_photo(
             chat_id=CHANNEL_ID,
-            photo=photo.file_id,
-            caption=caption
+            photo=photo.file_id
         )
         await update.message.reply_text("Изображение отправлено в канал!")
         context.user_data['awaiting_photo'] = False  # Сбрасываем флаг
