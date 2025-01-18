@@ -44,24 +44,30 @@ async def search_drug(drug_name):
                 coords_match = re.search(r'text=([\d.,]+)', map_link)
                 coords = coords_match.group(1) if coords_match else None
                 
-                # Формируем ссылки на Яндекс Карты
+                # Формируем ссылку на Яндекс Карты
                 yandex_map_link = f"https://maps.yandex.ru/?text={coords}" if coords else None
                 
-                # Формируем текст с ссылками
+                # Получаем текст аптеки и адреса
                 pharmacy = pharmacy_elem.text.strip() if pharmacy_elem else "Аптека не указана"
                 address = address_elem.text.strip() if address_elem else "Адрес не указан"
                 
-                # Создаем блок с информацией и ссылками
+                # Создаем блок с информацией, где названия аптеки и адрес являются ссылками
                 result_item = (
                     f"💊 {name}\n"
                     f"💰 {price} руб.\n"
-                    f"🏥 {pharmacy}\n"
-                    f"📍 {address}\n"
                 )
                 
-                # Добавляем ссылку на карту, если есть координаты
+                # Добавляем аптеку и адрес как ссылки, если есть координаты
                 if yandex_map_link:
-                    result_item += f"🗺 <a href='{yandex_map_link}'>Открыть на карте</a>\n"
+                    result_item += (
+                        f"🏥 <a href='{yandex_map_link}'>{pharmacy}</a>\n"
+                        f"📍 <a href='{yandex_map_link}'>{address}</a>\n"
+                    )
+                else:
+                    result_item += (
+                        f"🏥 {pharmacy}\n"
+                        f"📍 {address}\n"
+                    )
                 
                 results.append(result_item)
                 print(f"\n[DEBUG] Найден элемент:\n{result_item}")
