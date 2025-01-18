@@ -2,6 +2,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from handlers import start, search_medicine, cancel, button_handler, SEARCH
 
 def main():
+    print("Бот запущен...")
     from config import BOT_TOKEN
     
     application = Application.builder().token(BOT_TOKEN).build()

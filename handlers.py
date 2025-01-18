@@ -63,16 +63,18 @@ async def show_page(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     reply_markup = InlineKeyboardMarkup(keyboard) if keyboard else None
     
-    # Отправляем или редактируем сообщение
+    # Отправляем или редактируем сообщение с поддержкой HTML
     if update.callback_query:
         await update.callback_query.edit_message_text(
             text=message_text,
-            reply_markup=reply_markup
+            reply_markup=reply_markup,
+            parse_mode='HTML'  # Добавлено для поддержки HTML-ссылок
         )
     else:
         await update.message.reply_text(
             text=message_text,
-            reply_markup=reply_markup
+            reply_markup=reply_markup,
+            parse_mode='HTML'  # Добавлено для поддержки HTML-ссылок
         )
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
