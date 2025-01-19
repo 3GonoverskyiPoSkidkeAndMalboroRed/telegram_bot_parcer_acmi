@@ -47,27 +47,18 @@ async def search_drug(drug_name):
                 # Формируем ссылку на Яндекс Карты
                 yandex_map_link = f"https://maps.yandex.ru/?text={coords}" if coords else None
                 
-                # Получаем текст аптеки и адреса
+                # Получаем ссылку на сайт аптеки и текст
+                pharmacy_link = "https://www.acmespb.ru" + pharmacy_elem.get('href', '') if pharmacy_elem else None
                 pharmacy = pharmacy_elem.text.strip() if pharmacy_elem else "Аптека не указана"
                 address = address_elem.text.strip() if address_elem else "Адрес не указан"
                 
-                # Создаем блок с информацией, где названия аптеки и адрес являются ссылками
+                # Создаем блок с информацией (только встроенные ссылки)
                 result_item = (
                     f"💊 {name}\n"
                     f"💰 {price} руб.\n"
+                    f"🏥 <a href='{pharmacy_link}'>{pharmacy}</a>\n"
+                    f"📍 <a href='{yandex_map_link}'>{address}</a>"  # Убрали \n в конце
                 )
-                
-                # Добавляем аптеку и адрес как ссылки, если есть координаты
-                if yandex_map_link:
-                    result_item += (
-                        f"🏥 <a href='{yandex_map_link}'>{pharmacy}</a>\n"
-                        f"📍 <a href='{yandex_map_link}'>{address}</a>\n"
-                    )
-                else:
-                    result_item += (
-                        f"🏥 {pharmacy}\n"
-                        f"📍 {address}\n"
-                    )
                 
                 results.append(result_item)
                 print(f"\n[DEBUG] Найден элемент:\n{result_item}")
@@ -77,7 +68,7 @@ async def search_drug(drug_name):
                 continue
         
         print(f"\n[DEBUG] Всего найдено элементов: {len(results)}")
-        return "\n".join(results) if results else "Препарат не найден"
+        return "\n\n".join(results) if results else "Препарат не найден"  # Изменили разделитель на \n\n
         
     except Exception as e:
         print(f"[DEBUG] Критическая ошибка: {str(e)}")

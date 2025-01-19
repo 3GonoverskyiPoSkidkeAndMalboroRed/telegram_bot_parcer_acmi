@@ -1,5 +1,13 @@
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler, ConversationHandler
-from handlers import start, search_medicine, cancel, button_handler, SEARCH
+from handlers import start, search_medicine, cancel, button_handler, handle_price_limit, SEARCH, WAITING_FOR_PRICE
+import logging
+
+# Настройка логирования
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+logger = logging.getLogger(__name__)
 
 def main():
     print("Бот запущен...")
@@ -7,24 +15,23 @@ def main():
     
     application = Application.builder().token(BOT_TOKEN).build()
     
-    # Основной обработчик для сообщений
+    # Настройка ConversationHandler
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
             SEARCH: [
-                MessageHandler(filters.TEXT & ~filters.COMMAND, search_medicine)
+                MessageHandler(filters.TEXT & ~filters.COMMAND, search_medicine),
+                CallbackQueryHandler(button_handler)
+            ],
+            WAITING_FOR_PRICE: [
+                MessageHandler(filters.TEXT & ~filters.COMMAND, handle_price_limit)
             ]
         },
         fallbacks=[CommandHandler('cancel', cancel)],
-        per_message=False  # Отключаем per_message для обычных сообщений
+        per_message=False  # Устанавливаем False для поддержки разных типов обработчиков
     )
     
-    # Отдельный обработчик для кнопок навигации
-    application.add_handler(CallbackQueryHandler(button_handler))
-    
-    # Добавляем основной обработчик
     application.add_handler(conv_handler)
-    
     application.run_polling()
 
 if __name__ == '__main__':
