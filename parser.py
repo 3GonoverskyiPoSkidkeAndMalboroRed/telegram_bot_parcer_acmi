@@ -54,7 +54,7 @@ async def search_drug(drug_name):
                 
                 # Создаем блок с информацией (только встроенные ссылки)
                 result_item = (
-                    f"💊 {name}\n"
+                    f"💊 {name} таб.п/обол. 50мг №28\n"
                     f"💰 {price} руб.\n"
                     f"🏥 <a href='{pharmacy_link}'>{pharmacy}</a>\n"
                     f"📍 <a href='{yandex_map_link}'>{address}</a>"  # Убрали \n в конце
